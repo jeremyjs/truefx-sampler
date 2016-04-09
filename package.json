@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jeremyjs/truefx-sampler#readme",
   "dependencies": {
+    "csv-parser": "^1.9.3",
     "koa": "^1.2.0",
     "request": "^2.70.0"
   }
