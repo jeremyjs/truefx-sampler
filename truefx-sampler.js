@@ -4,6 +4,7 @@
 
 const request = require('request');
 const csv = { parse: require('csv-parse') };
+const Tick = require('./Tick');
 const TRUEFX_URL = 'http://webrates.truefx.com/rates/connect.html?f=csv';
 
 // interval <ms>
@@ -14,11 +15,15 @@ const TRUEFX_URL = 'http://webrates.truefx.com/rates/connect.html?f=csv';
     if (res.statusCode !== 200) console.log('non-success error code: ', res.statusCode);
 
     console.log(body);
-    csv.parse(body, function (err, data) {
+    csv.parse(body, function (err, rows) {
       console.log('err: ', err);
-      console.log(data);
+      console.log(rows);
 
-      // setDatabase(data);
+      const ticks = rows.map(Tick);
+
+      console.log('ticks: ', ticks);
+
+      // setDatabase(ticks);
     });
   });
 })();
