@@ -5,8 +5,9 @@
 const request = require('request');
 const TRUEFX_URL = 'http://webrates.truefx.com/rates/connect.html?f=csv';
 
-// { interval <ms> }
-function sampler ({ interval = 1 }) {
+// interval <ms>
+(function sampler (interval) {
+  interval = interval || 1;
   request(TRUEFX_URL, function (err, res, body) {
     if (err) console.log('sampler error: ', err);
     if (res.statusCode !== 200) console.log('non-success error code: ', res.statusCode);
@@ -15,6 +16,4 @@ function sampler ({ interval = 1 }) {
     // let data = parseCsv(body);
     // setDatabase(data);
   });
-}
-
-module.exports = sampler;
+})();
