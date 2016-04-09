@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jeremyjs/truefx-sampler/issues"
   },
-  "homepage": "https://github.com/jeremyjs/truefx-sampler#readme"
+  "homepage": "https://github.com/jeremyjs/truefx-sampler#readme",
+  "dependencies": {
+    "koa": "^1.2.0"
+  }
 }
