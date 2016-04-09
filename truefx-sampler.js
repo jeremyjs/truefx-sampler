@@ -16,3 +16,5 @@ function sampler ({ interval = 1 }) {
     // setDatabase(data);
   });
 }
+
+module.exports = sampler;
