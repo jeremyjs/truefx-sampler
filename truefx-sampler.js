@@ -3,6 +3,7 @@
 //   for a full list of valid currency pairs (unauthorized list only)
 
 const request = require('request');
+const csv = { parse: require('csv-parse') };
 const TRUEFX_URL = 'http://webrates.truefx.com/rates/connect.html?f=csv';
 
 // interval <ms>
@@ -13,7 +14,11 @@ const TRUEFX_URL = 'http://webrates.truefx.com/rates/connect.html?f=csv';
     if (res.statusCode !== 200) console.log('non-success error code: ', res.statusCode);
 
     console.log(body);
-    // let data = parseCsv(body);
-    // setDatabase(data);
+    csv.parse(body, function (err, data) {
+      console.log('err: ', err);
+      console.log(data);
+
+      // setDatabase(data);
+    });
   });
 })();
