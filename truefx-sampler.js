@@ -6,18 +6,35 @@ const request = require('request');
 const csv = { parse: require('csv-parse') };
 const Tick = require('./Tick');
 const TRUEFX_URL = 'http://webrates.truefx.com/rates/connect.html?f=csv';
+const CSV_OPTIONS = {
+  skip_empty_lines: true,
+  trim: true,
+  comment: '\r',
+};
 
 // interval <ms>
 (function sampler (interval) {
   interval = interval || 1;
   request(TRUEFX_URL, function (err, res, body) {
-    if (err) console.log('sampler error: ', err);
-    if (res.statusCode !== 200) console.log('non-success error code: ', res.statusCode);
+    if (err) {
+      console.log('sampler error: ', err);
+      return;
+    }
+
+    if (res.statusCode !== 200) {
+      console.log('non-success error code: ', res.statusCode);
+      return;
+    }
 
     console.log(body);
-    csv.parse(body, function (err, rows) {
-      console.log('err: ', err);
-      console.log(rows);
+
+    csv.parse(body, CSV_OPTIONS, function (err, rows) {
+      if (err) {
+        console.log('csv parse error: ', err);
+        return;
+      }
+
+      console.log('rows: ', rows);
 
       const ticks = rows.map(Tick);
 
