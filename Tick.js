@@ -2,7 +2,7 @@
 module.exports = function Tick (obj) {
   if (Array.isArray(obj)) {
     return {
-      currencyPair: obj[0],
+      symbol:       obj[0],
       timestamp:    Number(obj[1]),
       bid:          Number(obj[2]),
       bidPips:      Number(obj[3]),

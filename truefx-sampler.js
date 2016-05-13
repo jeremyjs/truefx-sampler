@@ -46,9 +46,9 @@ function sample () {
       const ticks = rows.map(Tick);
 
       ticks.forEach(function (tick) {
-        const query = {currencyPair: tick.currencyPair, timestamp: tick.timestamp};
+        const query = {symbol: tick.symbol, timestamp: tick.timestamp};
         TickModel.findOneAndUpdate(query, tick, {upsert: true}, function (err, res) {
-          if (res === null) console.log(tick.timestamp, tick.currencyPair, tick.offer, tick.offerPips, tick.bid, tick.bidPips);
+          if (res === null) console.log(tick.timestamp, tick.symbol, tick.offer, tick.offerPips, tick.bid, tick.bidPips);
           if (err) console.error('Error on save:', err);
         });
       });
