@@ -20,37 +20,40 @@ mongoose.connect(config.db_url);
 // interval <ms>
 (function sampler (interval) {
   interval = interval || 1;
-  request(TRUEFX_URL, function (err, res, body) {
-    if (err) {
-      console.log('sampler error: ', err);
-      return;
-    }
 
-    if (res.statusCode !== 200) {
-      console.log('non-success error code: ', res.statusCode);
-      return;
-    }
-
-    console.log(body);
-
-    csv.parse(body, CSV_OPTIONS, function (err, rows) {
+  setInterval(function () {
+    request(TRUEFX_URL, function (err, res, body) {
       if (err) {
-        console.log('csv parse error: ', err);
+        console.log('sampler error: ', err);
         return;
       }
 
-      console.log('rows: ', rows);
+      if (res.statusCode !== 200) {
+        console.log('non-success error code: ', res.statusCode);
+        return;
+      }
 
-      const ticks = rows.map(Tick);
+      console.log(body);
 
-      console.log('ticks: ', ticks);
+      csv.parse(body, CSV_OPTIONS, function (err, rows) {
+        if (err) {
+          console.log('csv parse error: ', err);
+          return;
+        }
 
-      ticks.forEach(function (tick) {
-        const tickDoc = new TickModel(tick);
-        tickDoc.save(function (err) {
-          if (err) console.error('Error on save:', err);
+        console.log('rows: ', rows);
+
+        const ticks = rows.map(Tick);
+
+        console.log('ticks: ', ticks);
+
+        ticks.forEach(function (tick) {
+          const tickDoc = new TickModel(tick);
+          tickDoc.save(function (err) {
+            if (err) console.error('Error on save:', err);
+          });
         });
       });
     });
-  });
+  }, interval);
 })();
