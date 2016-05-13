@@ -33,21 +33,16 @@ mongoose.connect(config.db_url);
         return;
       }
 
-      console.log(body);
-
       csv.parse(body, CSV_OPTIONS, function (err, rows) {
         if (err) {
           console.log('csv parse error: ', err);
           return;
         }
 
-        console.log('rows: ', rows);
-
         const ticks = rows.map(Tick);
 
-        console.log('ticks: ', ticks);
-
         ticks.forEach(function (tick) {
+          console.log(tick.timestamp, tick.currencyPair, tick.offer, tick.bid);
           const tickDoc = new TickModel(tick);
           tickDoc.save(function (err) {
             if (err) console.error('Error on save:', err);
