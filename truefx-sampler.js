@@ -18,37 +18,40 @@ const CSV_OPTIONS = {
 mongoose.connect(config.db_url);
 
 // interval <ms>
-(function sampler (interval) {
-  interval = interval || 1;
+// if interval is not provided, will run once
+(function sampler () {
+  const interval = process.argv[2];
+  if (interval === undefined) sample();
+  else                        setInterval(sample, interval);
+})();
 
-  setInterval(function () {
-    request(TRUEFX_URL, function (err, res, body) {
+function sample () {
+  request(TRUEFX_URL, function (err, res, body) {
+    if (err) {
+      console.log('sampler error: ', err);
+      return;
+    }
+
+    if (res.statusCode !== 200) {
+      console.log('non-success error code: ', res.statusCode);
+      return;
+    }
+
+    csv.parse(body, CSV_OPTIONS, function (err, rows) {
       if (err) {
-        console.log('sampler error: ', err);
+        console.log('csv parse error: ', err);
         return;
       }
 
-      if (res.statusCode !== 200) {
-        console.log('non-success error code: ', res.statusCode);
-        return;
-      }
+      const ticks = rows.map(Tick);
 
-      csv.parse(body, CSV_OPTIONS, function (err, rows) {
-        if (err) {
-          console.log('csv parse error: ', err);
-          return;
-        }
-
-        const ticks = rows.map(Tick);
-
-        ticks.forEach(function (tick) {
-          console.log(tick.timestamp, tick.currencyPair, tick.offer, tick.bid);
-          const tickDoc = new TickModel(tick);
-          tickDoc.save(function (err) {
-            if (err) console.error('Error on save:', err);
-          });
+      ticks.forEach(function (tick) {
+        const query = {currencyPair: tick.currencyPair, timestamp: tick.timestamp};
+        TickModel.findOneAndUpdate(query, tick, {upsert: true}, function (err, res) {
+          if (res === null) console.log(tick.timestamp, tick.currencyPair, tick.offer, tick.offerPips, tick.bid, tick.bidPips);
+          if (err) console.error('Error on save:', err);
         });
       });
     });
-  }, interval);
-})();
+  });
+};
