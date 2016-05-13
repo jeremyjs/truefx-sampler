@@ -19,6 +19,7 @@
   "dependencies": {
     "csv-parse": "^1.0.4",
     "koa": "^1.2.0",
+    "mongoose": "^4.4.16",
     "request": "^2.70.0"
   }
 }
