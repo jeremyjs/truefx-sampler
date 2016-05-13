@@ -1,25 +1,29 @@
-const koa = require('koa');
-const app = koa();
+(function () { 'use strict';
 
-// x-response-time
-app.use(function *(next) {
-  let start = new Date;
-  yield next;
-  let ms = new Date - start;
-  this.set('X-Response-Time', ms + 'ms');
-});
+  const koa = require('koa');
+  const app = koa();
 
-// logger
-app.use(function *(next) {
-  let start = new Date;
-  yield next;
-  let ms = new Date - start;
-  console.log('%s %s - %s', this.method, this.url, ms);
-});
+  // x-response-time
+  app.use(function *(next) {
+    let start = new Date;
+    yield next;
+    let ms = new Date - start;
+    this.set('X-Response-Time', ms + 'ms');
+  });
 
-// response
-app.use(function *() {
-  this.body = 'Hello World';
-});
+  // logger
+  app.use(function *(next) {
+    let start = new Date;
+    yield next;
+    let ms = new Date - start;
+    console.log('%s %s - %s', this.method, this.url, ms);
+  });
 
-app.listen(3000);
+  // response
+  app.use(function *() {
+    this.body = 'Hello World';
+  });
+
+  app.listen(3000);
+
+})();
